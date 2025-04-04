@@ -1,0 +1,79 @@
+x-log-config: &log-config
+  logging:
+    driver: json-file
+    options:
+      max-size: "50m"
+      max-file: "20"
+services:
+  jellyfin:
+    container_name: jellyfin
+    build:
+      context: jellyfin
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:8096:8096
+    volumes:
+      - ./data/jellyfin:/srv/jellyfin
+      - ./data/media:/media
+    <<: *log-config
+  sabnzbd:
+    container_name: sabnzbd
+    build:
+      context: sabnzbd
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:8080:8080
+    volumes:
+      - ./data/sabnzbd:/srv/sabnzbd/.sabnzbd
+      - ./data/media:/media
+    <<: *log-config
+  sonarr:
+    container_name: sonarr
+    build:
+      context: sonarr
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:8989:8989
+    volumes:
+      - ./data/sonarr:/srv/sonarr/.config/Sonarr
+      - ./data/media:/media
+    <<: *log-config
+  lidarr:
+    container_name: lidarr
+    build:
+      context: lidarr
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:8686:8686
+    volumes:
+      - ./data/lidarr:/srv/lidarr/data
+      - ./data/media:/media
+    <<: *log-config
+  radarr:
+    container_name: radarr
+    build:
+      context: radarr
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:7878:7878
+    volumes:
+      - ./data/radarr:/srv/radarr/data
+      - ./data/media:/media
+    <<: *log-config
+  homepage:
+    container_name: homepage
+    build:
+      context: homepage
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:3000:3000
+    volumes:
+      - ./data/homepage:/srv/homepage/config
+      - ./data/media:/media:ro
+    <<: *log-config
